@@ -36,5 +36,12 @@ namespace EF01_Demo.Entities
         public string Password { get; set; }
         // then add migration
 
+        [ForeignKey("Department")] // forgine key belong to Employee-Department relation.
+        // We add DepartmentDeptID to use it through the application , it must to be named = entityName + itisprimaryKey (in this case, Department + DeptID).
+        public int? DepartmentDeptID { get; set; }
+        // It is optional to all the realtionship (one)
+        public Department Department { get; set; }
+        //Navigational property => One 
+
     }
 }

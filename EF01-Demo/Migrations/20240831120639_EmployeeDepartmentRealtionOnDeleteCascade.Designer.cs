@@ -4,6 +4,7 @@ using EF01_Demo.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF01_Demo.Migrations
 {
     [DbContext(typeof(CompanyDBContext))]
-    partial class CompanyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240831120639_EmployeeDepartmentRealtionOnDeleteCascade")]
+    partial class EmployeeDepartmentRealtionOnDeleteCascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,23 +24,6 @@ namespace EF01_Demo.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("EF01_Demo.Entities.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Courses");
-                });
 
             modelBuilder.Entity("EF01_Demo.Entities.Department", b =>
                 {
@@ -129,44 +115,6 @@ namespace EF01_Demo.Migrations
                     b.ToTable("EmployeeDataAnnotation");
                 });
 
-            modelBuilder.Entity("EF01_Demo.Entities.Student", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<int?>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("EF01_Demo.Entities.StudentCousre", b =>
-                {
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Grade")
-                        .HasColumnType("int");
-
-                    b.HasKey("StudentId", "CourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("StudentCousre");
-                });
-
             modelBuilder.Entity("EF01_Demo.Entities.EmployeeDataAnnotation", b =>
                 {
                     b.HasOne("EF01_Demo.Entities.Department", "Department")
@@ -177,38 +125,9 @@ namespace EF01_Demo.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("EF01_Demo.Entities.StudentCousre", b =>
-                {
-                    b.HasOne("EF01_Demo.Entities.Course", "Course")
-                        .WithMany("CourseStudents")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EF01_Demo.Entities.Student", "Student")
-                        .WithMany("StudentCourses")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("EF01_Demo.Entities.Course", b =>
-                {
-                    b.Navigation("CourseStudents");
-                });
-
             modelBuilder.Entity("EF01_Demo.Entities.Department", b =>
                 {
                     b.Navigation("Employess");
-                });
-
-            modelBuilder.Entity("EF01_Demo.Entities.Student", b =>
-                {
-                    b.Navigation("StudentCourses");
                 });
 #pragma warning restore 612, 618
         }
