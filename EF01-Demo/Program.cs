@@ -175,12 +175,17 @@ namespace EF01_Demo
             #endregion
 
             #region One To many Relation between Employee and department 
-
             #endregion
             #region Many to many between Student and Course
+            #endregion
+
+            #region Inheritance Mapping 
 
             #endregion
 
+            #region Retrive data
+
+            #endregion
 
         }
     }

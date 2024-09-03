@@ -38,8 +38,10 @@ namespace EF01_Demo.Entities
 
         [ForeignKey("Department")] // forgine key belong to Employee-Department relation.
         // We add DepartmentDeptID to use it through the application , it must to be named = entityName + itisprimaryKey (in this case, Department + DeptID).
-        public int? DepartmentDeptID { get; set; }
+        public int? DepartmentID { get; set; }
         // It is optional to all the realtionship (one)
+
+        [InverseProperty("Employess")]
         public Department Department { get; set; }
         //Navigational property => One 
 

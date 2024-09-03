@@ -26,7 +26,7 @@ namespace EF01_Demo.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //OLD NAME : optionsBuilder.UseSqlServer("Data Source = SW-BYANMAGED ; Initial Catalog  = CompanyG02 ;  Integrated Security = True ");
-            optionsBuilder.UseSqlServer("Server = SW-BYANMAGED ; Database = CompanyG02 ; Trusted_Connection = True ; Encrypt = False");
+            optionsBuilder.UseSqlServer("Server = SW-BYANMAGED ; Database = CompanyG02 ; Trusted_Connection = True ; Encrypt = False" );
             // we add  Encrypt = False => for cerificate ssl error.
             // OR : optionsBuilder.UseSqlServer("Server = . ; Database = CompanyG02 ; Trusted_Connection = True ");
 
@@ -142,9 +142,18 @@ namespace EF01_Demo.Contexts
             modelBuilder.Entity<Course>()
                         .HasMany(C => C.CourseStudents)
                         .WithOne(sc => sc.Course);
-                        
+
             #endregion
             #endregion
+
+
+
+            // Defult value :
+
+            modelBuilder.Entity<Department>()
+                        .Property(D => D.DateOfCreation)
+                        // .HasDefaultValue(DateTime.Now) => date of creation the table so now
+                        .HasDefaultValueSql("GETDATE()"); // => DATE OF ADD DEPARTMENT TO THE TABLE
             base.OnModelCreating(modelBuilder);
         }
 
