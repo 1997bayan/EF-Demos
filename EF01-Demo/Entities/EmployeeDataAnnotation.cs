@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EF01_Demo.Entities
 {
-    internal class EmployeeDataAnnotation
+    public class EmployeeDataAnnotation
     {
             [Key] // To define that EmpId is a primary key
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]// to add identity with default (1,1)
@@ -42,7 +42,7 @@ namespace EF01_Demo.Entities
         // It is optional to all the realtionship (one)
 
         [InverseProperty("Employess")]
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
         //Navigational property => One 
 
     }

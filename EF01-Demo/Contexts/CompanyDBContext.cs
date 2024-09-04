@@ -26,7 +26,7 @@ namespace EF01_Demo.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             //OLD NAME : optionsBuilder.UseSqlServer("Data Source = SW-BYANMAGED ; Initial Catalog  = CompanyG02 ;  Integrated Security = True ");
-            optionsBuilder.UseSqlServer("Server = SW-BYANMAGED ; Database = CompanyG02 ; Trusted_Connection = True ; Encrypt = False" );
+            optionsBuilder.UseLazyLoadingProxies().UseSqlServer("Server = SW-BYANMAGED ; Database = CompanyG02 ; Trusted_Connection = True ; Encrypt = False" );
             // we add  Encrypt = False => for cerificate ssl error.
             // OR : optionsBuilder.UseSqlServer("Server = . ; Database = CompanyG02 ; Trusted_Connection = True ");
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EF01_Demo.Entities
 {
-    internal class Department
+    public class Department
     {
         public int DeptID { get; set; }
         public string Name { get; set; }
@@ -17,7 +17,7 @@ namespace EF01_Demo.Entities
 
         // If there are more than one relationship between the same two entity:what we do ?
         [InverseProperty("Department")]
-        public ICollection<EmployeeDataAnnotation> Employess { get; set; } = new HashSet<EmployeeDataAnnotation>();
+        public virtual ICollection<EmployeeDataAnnotation> Employess { get; set; } = new HashSet<EmployeeDataAnnotation>();
         //Navigational property => Many 
         // why its type ICollection ?
 

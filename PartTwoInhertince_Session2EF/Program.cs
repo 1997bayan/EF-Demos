@@ -51,11 +51,13 @@ namespace PartTwoInhertince_Session2EF
             var Employees = from E in dbContext.Employees
                             select E;
 
+            #region TPH : TO GET DATA  from one table "Employees" we should define the type of the employee using [OfType].
             foreach (var employee in Employees.OfType<FullTimeEmployee>())
             {
                 Console.WriteLine($"{employee.Name} , {employee.Salary}");
             }
 
+            #endregion
 
 
 

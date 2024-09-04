@@ -151,21 +151,21 @@ namespace EF01_Demo
             #region Update
             //Emp01.Name = "Hamada";
             //Console.WriteLine(dBContext.Entry(Emp01).State); //Detached
-            Console.WriteLine(dBContext.Entry(Employee).State); 
-            Employee.Name = "dh";
-            Console.WriteLine(dBContext.Entry(Employee).State);
+            //Console.WriteLine(dBContext.Entry(Employee).State); 
+            //Employee.Name = "dh";
+            //Console.WriteLine(dBContext.Entry(Employee).State);
 
-            dBContext.SaveChanges();
-            Console.WriteLine("=========");
-            Console.WriteLine(dBContext.Entry(Employee).State);
+            ////dBContext.SaveChanges();
+            //Console.WriteLine("=========");
+            //Console.WriteLine(dBContext.Entry(Employee).State);
 
             #endregion
-            Console.WriteLine("=========");
-            Console.WriteLine(dBContext.Entry(Employee).State);
-            dBContext.Remove(Employee);
-            Console.WriteLine(dBContext.Entry(Employee).State);
-            dBContext.SaveChanges();
-            Console.WriteLine(dBContext.Entry(Employee).State);
+            /* Console.WriteLine("=========");
+             Console.WriteLine(dBContext.Entry(Employee).State);
+             dBContext.Remove(Employee);
+             Console.WriteLine(dBContext.Entry(Employee).State);
+             dBContext.SaveChanges();
+             Console.WriteLine(dBContext.Entry(Employee).State); */
 
 
 
@@ -184,6 +184,90 @@ namespace EF01_Demo
             #endregion
 
             #region Retrive data
+
+            // 1- open the connection with dataBase
+
+            #region Without Loading
+            //var Employee01 = (from E in dBContext.EmployeeDataAnnotation
+            //                  where E.EmpId == 5
+            //                  select E).FirstOrDefault();
+
+            //Console.WriteLine($"Emp Name : {Employee01?.Name ?? "Not Found"} , DEPTNAME : {Employee01?.Department?.Name ?? "NO department"}");
+
+            //var Department = (from D in dBContext.departments
+            //                  where D.DeptID == 40
+            //                  select D).FirstOrDefault();
+
+            //Console.WriteLine($"Department (40) == {Department?.Name ?? "Not Found"}");
+
+
+            #endregion
+            #region Explicit loading
+            var Employee01 = (from E in dBContext.EmployeeDataAnnotation
+                              where E.EmpId == 6
+                              select E).FirstOrDefault();
+
+            dBContext.Entry(Employee01).Reference(E => E.Department ).Load();
+
+            Console.WriteLine($"Emp Name : {Employee01?.Name ?? "Not Found"} , DEPTNAME : {Employee01?.Department?.Name ?? "NO department"}");
+
+            var Department = (from D in dBContext.departments
+                              where D.DeptID == 40
+                              select D).FirstOrDefault();
+            Console.WriteLine("====================");
+            Console.WriteLine($"Department (40) == {Department?.Name ?? "Not Found"}");
+            dBContext.Entry(Department).Collection(d => d.Employess).Load();
+            Console.WriteLine("====================");
+
+            foreach (var E in Department.Employess)
+            {
+                Console.WriteLine(E.Name );
+            }
+
+
+
+            #endregion
+
+            #region Eager loading
+            Console.WriteLine("Eager loading =========");
+            //Eager loading will load the data even if not calling.
+
+            var Employee02 = (from E in dBContext.EmployeeDataAnnotation.Include(E =>E.Department)
+                              where E.EmpId == 7
+                              select E).FirstOrDefault();
+
+            var Department02 = (from D in dBContext.departments.Include(d =>d.Employess)
+                              where D.DeptID == 50
+                              select D).FirstOrDefault();
+            Console.WriteLine($"Emp Name : {Employee02?.Name ?? "Not Found"} , DEPTNAME : {Employee02?.Department?.Name ?? "NO department"}");
+
+            
+            Console.WriteLine($"Department (50) == {Department02?.Name ?? "Not Found"}");
+            
+            Console.WriteLine("====================");
+
+            foreach (var E in Department02.Employess)
+            {
+                Console.WriteLine(E.Name);
+            }
+
+            #endregion
+
+            #region Lazy loading
+            // 1- install package for Lazy loading => entityframeworkcore.proxies
+            // // enable lazyloading enviroment  
+            //2- in dbcontext add uselazyloadingProxies()
+            // 3- add virtual to all navigation properties in the project
+            // 4- make all entity to be public
+            // send two request to get the data when i need it.
+
+            Console.WriteLine("Lazy loading ");
+            var Employee03 = (from E in dBContext.EmployeeDataAnnotation
+                              where E.EmpId == 8
+                              select E).FirstOrDefault();
+
+            Console.WriteLine($"Emp Name : {Employee03?.Name ?? "Not Found"} , DEPTNAME : {Employee03?.Department?.Name ?? "NO department"}");
+            #endregion
 
             #endregion
 

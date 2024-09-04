@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EF01_Demo.Entities
 {
-    internal class StudentCousre
+    public class StudentCousre
     {
         [ForeignKey("Student")]
         public int StudentId { get; set; }
@@ -19,10 +19,10 @@ namespace EF01_Demo.Entities
 
         // one to many : Student and studentCourse table
 
-        public Student  Student { get; set; }
+        public virtual Student  Student { get; set; }
 
         // one to many : Course and studentCourse table
-        public Course Course { get; set; }
+        public virtual Course Course { get; set; }
 
 
     }

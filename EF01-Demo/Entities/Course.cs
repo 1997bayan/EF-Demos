@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EF01_Demo.Entities
 {
-    internal class Course
+    public class Course
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -17,7 +17,7 @@ namespace EF01_Demo.Entities
         // one to many : Course and studentCourse table 
 
         //navigation property
-        public ICollection<StudentCousre> CourseStudents { get; set; } = new HashSet<StudentCousre>(); 
+        public virtual ICollection<StudentCousre> CourseStudents { get; set; } = new HashSet<StudentCousre>(); 
 
     }
 }
