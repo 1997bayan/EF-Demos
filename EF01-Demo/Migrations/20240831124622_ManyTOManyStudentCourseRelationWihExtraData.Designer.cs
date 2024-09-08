@@ -4,6 +4,7 @@ using EF01_Demo.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,16 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EF01_Demo.Migrations
 {
     [DbContext(typeof(CompanyDBContext))]
-    partial class CompanyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240831124622_ManyTOManyStudentCourseRelationWihExtraData")]
+    partial class ManyTOManyStudentCourseRelationWihExtraData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -50,10 +50,8 @@ namespace EF01_Demo.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DeptID"), 10L, 10);
 
-                    b.Property<DateOnly>("DateOfCreation")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValueSql("GETDATE()");
+                    b.Property<DateTime>("DateOfCreation")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .ValueGeneratedOnAdd()
@@ -105,7 +103,7 @@ namespace EF01_Demo.Migrations
                     b.Property<int?>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DepartmentID")
+                    b.Property<int?>("DepartmentDeptID")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -129,7 +127,7 @@ namespace EF01_Demo.Migrations
 
                     b.HasKey("EmpId");
 
-                    b.HasIndex("DepartmentID");
+                    b.HasIndex("DepartmentDeptID");
 
                     b.ToTable("EmployeeDataAnnotation");
                 });
@@ -176,7 +174,7 @@ namespace EF01_Demo.Migrations
                 {
                     b.HasOne("EF01_Demo.Entities.Department", "Department")
                         .WithMany("Employess")
-                        .HasForeignKey("DepartmentID")
+                        .HasForeignKey("DepartmentDeptID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Department");

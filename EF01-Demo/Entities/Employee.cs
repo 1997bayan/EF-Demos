@@ -14,7 +14,7 @@ namespace EF01_Demo.Entities
      //   ممكن استخدم الاربع طرق سوا لا يتعارضوا 
      //
 
-    internal class Employee 
+    public class Employee 
     {
         public int Id { get; set; } // to set automatic primary key it should be : public numeric named as "Id" or "EmployeeId"
         public string EmpName { get; set; } // string Reference Type : dosnt Allow null , "nvarchar(max)"
