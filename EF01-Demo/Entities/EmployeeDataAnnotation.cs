@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EF01_Demo.Entities
 {
-    public class EmployeeDataAnnotation
+    public class EmployeeDataAnnotation : IComparable<EmployeeDataAnnotation>
     {
             [Key] // To define that EmpId is a primary key
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]// to add identity with default (1,1)
@@ -43,7 +43,12 @@ namespace EF01_Demo.Entities
 
         [InverseProperty("Employess")]
         public virtual Department Department { get; set; }
+
         //Navigational property => One 
+
+
+        public int CompareTo(EmployeeDataAnnotation? other)
+            => this.Salary.CompareTo(other?.Salary);
 
     }
 }

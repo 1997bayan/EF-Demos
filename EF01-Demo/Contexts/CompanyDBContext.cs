@@ -42,6 +42,7 @@ namespace EF01_Demo.Contexts
 
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<EmployeeDepartmentView> EmployeeDepartmentView { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -144,6 +145,8 @@ namespace EF01_Demo.Contexts
                         .WithOne(sc => sc.Course);
 
             #endregion
+
+
             #endregion
 
 
@@ -154,6 +157,10 @@ namespace EF01_Demo.Contexts
                         .Property(D => D.DateOfCreation)
                         // .HasDefaultValue(DateTime.Now) => date of creation the table so now
                         .HasDefaultValueSql("GETDATE()"); // => DATE OF ADD DEPARTMENT TO THE TABLE
+
+
+            modelBuilder.Entity<EmployeeDepartmentView>().ToView("EmployeeDepartmentView").HasNoKey();
+
             base.OnModelCreating(modelBuilder);
         }
 

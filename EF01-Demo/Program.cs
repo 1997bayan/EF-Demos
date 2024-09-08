@@ -1,6 +1,7 @@
 ﻿using EF01_Demo.Contexts;
 using EF01_Demo.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EF01_Demo
@@ -203,53 +204,53 @@ namespace EF01_Demo
 
             #endregion
             #region Explicit loading
-            var Employee01 = (from E in dBContext.EmployeeDataAnnotation
-                              where E.EmpId == 6
-                              select E).FirstOrDefault();
+            //var Employee01 = (from E in dBContext.EmployeeDataAnnotation
+            //                  where E.EmpId == 6
+            //                  select E).FirstOrDefault();
 
-            dBContext.Entry(Employee01).Reference(E => E.Department ).Load();
+            //dBContext.Entry(Employee01).Reference(E => E.Department ).Load();
 
-            Console.WriteLine($"Emp Name : {Employee01?.Name ?? "Not Found"} , DEPTNAME : {Employee01?.Department?.Name ?? "NO department"}");
+            //Console.WriteLine($"Emp Name : {Employee01?.Name ?? "Not Found"} , DEPTNAME : {Employee01?.Department?.Name ?? "NO department"}");
 
-            var Department = (from D in dBContext.departments
-                              where D.DeptID == 40
-                              select D).FirstOrDefault();
-            Console.WriteLine("====================");
-            Console.WriteLine($"Department (40) == {Department?.Name ?? "Not Found"}");
-            dBContext.Entry(Department).Collection(d => d.Employess).Load();
-            Console.WriteLine("====================");
+            //var Department = (from D in dBContext.departments
+            //                  where D.DeptID == 40
+            //                  select D).FirstOrDefault();
+            //Console.WriteLine("====================");
+            //Console.WriteLine($"Department (40) == {Department?.Name ?? "Not Found"}");
+            //dBContext.Entry(Department).Collection(d => d.Employess).Load();
+            //Console.WriteLine("====================");
 
-            foreach (var E in Department.Employess)
-            {
-                Console.WriteLine(E.Name );
-            }
+            //foreach (var E in Department.Employess)
+            //{
+            //    Console.WriteLine(E.Name );
+            //}
 
 
 
             #endregion
 
             #region Eager loading
-            Console.WriteLine("Eager loading =========");
-            //Eager loading will load the data even if not calling.
+            //Console.WriteLine("Eager loading =========");
+            ////Eager loading will load the data even if not calling.
 
-            var Employee02 = (from E in dBContext.EmployeeDataAnnotation.Include(E =>E.Department)
-                              where E.EmpId == 7
-                              select E).FirstOrDefault();
+            //var Employee02 = (from E in dBContext.EmployeeDataAnnotation.Include(E =>E.Department)
+            //                  where E.EmpId == 7
+            //                  select E).FirstOrDefault();
 
-            var Department02 = (from D in dBContext.departments.Include(d =>d.Employess)
-                              where D.DeptID == 50
-                              select D).FirstOrDefault();
-            Console.WriteLine($"Emp Name : {Employee02?.Name ?? "Not Found"} , DEPTNAME : {Employee02?.Department?.Name ?? "NO department"}");
+            //var Department02 = (from D in dBContext.departments.Include(d =>d.Employess)
+            //                  where D.DeptID == 50
+            //                  select D).FirstOrDefault();
+            //Console.WriteLine($"Emp Name : {Employee02?.Name ?? "Not Found"} , DEPTNAME : {Employee02?.Department?.Name ?? "NO department"}");
 
-            
-            Console.WriteLine($"Department (50) == {Department02?.Name ?? "Not Found"}");
-            
-            Console.WriteLine("====================");
 
-            foreach (var E in Department02.Employess)
-            {
-                Console.WriteLine(E.Name);
-            }
+            //Console.WriteLine($"Department (50) == {Department02?.Name ?? "Not Found"}");
+
+            //Console.WriteLine("====================");
+
+            //foreach (var E in Department02.Employess)
+            //{
+            //    Console.WriteLine(E.Name);
+            //}
 
             #endregion
 
@@ -261,16 +262,159 @@ namespace EF01_Demo
             // 4- make all entity to be public
             // send two request to get the data when i need it.
 
-            Console.WriteLine("Lazy loading ");
-            var Employee03 = (from E in dBContext.EmployeeDataAnnotation
-                              where E.EmpId == 8
-                              select E).FirstOrDefault();
+            //Console.WriteLine("Lazy loading ");
+            //var Employee03 = (from E in dBContext.EmployeeDataAnnotation
+            //                  where E.EmpId == 8
+            //                  select E).FirstOrDefault();
 
-            Console.WriteLine($"Emp Name : {Employee03?.Name ?? "Not Found"} , DEPTNAME : {Employee03?.Department?.Name ?? "NO department"}");
+            //Console.WriteLine($"Emp Name : {Employee03?.Name ?? "Not Found"} , DEPTNAME : {Employee03?.Department?.Name ?? "NO department"}");
             #endregion
 
             #endregion
 
+            #region Session 4
+            #region Join Operator
+            // Defer expression we you call it will request the data
+            //Query expression
+
+            var x = from e in dBContext.EmployeeDataAnnotation
+                    join d in dBContext.departments
+                    on /*forgin key*/ e.DepartmentID equals /*primary  key*/  d.DeptID
+                    where e.Salary > 5000
+                    select new
+                    {
+                        EmpName = e.Name,
+                        Deptname = d.Name
+                    };
+
+
+            //Fluent Syntax
+
+           var y = dBContext.EmployeeDataAnnotation.Join(dBContext.departments, E => E.DepartmentID, D => D.DeptID, (E, D) => new
+            {
+                EmpName = E.Name,
+                DeptName = D.Name,
+                Salary = E.Salary
+
+            }).Where(A => A.Salary > 3000);
+
+
+            foreach (var emp in y)
+            {
+                Console.WriteLine( emp);
+            }
+            // What is group join that use for outerJoin???
+
+
+            #endregion
+
+
+            #region Mapping View / representind the view
+    
+            // First the view should be created in database
+            // create class represent the view
+
+            //var result = from e in dBContext.EmployeeDepartmentView
+               //          select e;
+            foreach (var emp in  dBContext.EmployeeDepartmentView)
+            {
+                Console.WriteLine($"{emp.EmployeeName} , {emp.DeptName}");
+            }
+
+            #endregion
+            #region Tracking , UnTracking
+
+            // change traker : observing the object (that came from dataBase)
+            // The dEFUALT BEHAVIOUR OF EF to track
+            // what saveChanges do ?
+            //tracking take from performance so use it when you need it
+
+            #region Tracking
+            var employee = (from E in dBContext.EmployeeDataAnnotation
+                            where E.EmpId == 7
+                            select E).FirstOrDefault();
+
+
+            Console.WriteLine(employee);
+
+            Console.WriteLine(dBContext.Entry(employee).State); // Unchanged
+
+            employee.Name = "Hamada";
+
+            Console.WriteLine(dBContext.Entry(employee).State); //Modified قارن باللي موجود بالداتا بيس لقاه متغير
+            dBContext.SaveChanges();
+            Console.WriteLine(dBContext.Entry(employee).State); //Unchanged 
+            #endregion
+
+            #region NoTracking
+             // for readOnly data
+            var employee10 = (from E in dBContext.EmployeeDataAnnotation
+                            where E.EmpId == 8
+                            select E).AsNoTracking(). FirstOrDefault();
+            Console.WriteLine(dBContext.Entry(employee10).State);
+
+            employee10.Name = "lolo";
+
+            Console.WriteLine(dBContext.Entry(employee10).State);
+
+            dBContext.SaveChanges();
+            Console.WriteLine(dBContext.Entry(employee10).State);
+
+
+            //change the default behaviour
+            //dBContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll // This is the defual in EF
+            dBContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking; // when we want to change the default behaviour
+
+
+            #endregion
+
+            #region MaxBy , MinBy
+            EmployeeDataAnnotation[] Emps =
+            {
+                new EmployeeDataAnnotation (){ EmpId =1 ,  Name = "Bayan " , Age = 20 , Salary = 30000 , Email = "Bayan@gmail.com"} ,
+                new EmployeeDataAnnotation (){ EmpId = 2,  Name = "Omar " , Age = 30 , Salary = 40000 , Email = "Omar@gmail.com"}
+
+            };
+
+            //First Method 
+
+            var MaxEmp = Emps.Max(); // At least one object must implement IComparable.
+            var MinEmp = Emps.Min();
+
+
+
+            // Second Method
+            MaxEmp = Emps.OrderByDescending(e => e.Salary).FirstOrDefault();
+            MinEmp = Emps.OrderBy (e => e.Salary).FirstOrDefault();
+
+
+            /// Third Method
+            /// 
+            MaxEmp = Emps.MaxBy(e => e.Salary);
+            MinEmp = Emps.MinBy(e => e.Salary);
+            
+            Console.WriteLine($"MaxEmp: {MaxEmp.Name} , MinEmp: {MinEmp.Name}");
+
+            #endregion
+
+
+
+
+            #endregion
+
+            #region DataBase First Approche
+
+
+
+
+            #endregion
+
+
+
+
+
+
+            #endregion
         }
     }
 }
